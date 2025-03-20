@@ -1,4 +1,3 @@
-// Select elements
 const display = document.querySelector(".display");
 const numberButtons = document.querySelectorAll(".number");
 const operatorButtons = document.querySelectorAll(".operator");
@@ -6,7 +5,6 @@ const clearButton = document.querySelector(".clear");
 const equalsButton = document.querySelector(".equals");
 const backspaceButton = document.querySelector(".backspace");
 
-// Variables to store user input
 let firstNumber = "";
 let secondNumber = "";
 let currentOperator = null;
@@ -34,8 +32,8 @@ operatorButtons.forEach((button) => {
     button.addEventListener("click", () => {
         if (currentOperator !== null && !shouldResetDisplay) {
             secondNumber = display.textContent;
-            display.textContent = operate(currentOperator, parseFloat(firstNumber), parseFloat(secondNumber));
-            firstNumber = display.textContent;
+            firstNumber = operate(currentOperator, parseFloat(firstNumber), parseFloat(secondNumber));
+            display.textContent = firstNumber;
         } else {
             firstNumber = display.textContent;
         }
@@ -53,6 +51,7 @@ equalsButton.addEventListener("click", () => {
 
     if (result === "Error: Division by zero!") {
         display.textContent = "😡 Error!";
+        setTimeout(() => clearButton.click(), 2000); // Reset after 2 seconds
     } else {
         display.textContent = result;
     }
@@ -63,7 +62,7 @@ equalsButton.addEventListener("click", () => {
     shouldResetDisplay = true;
 });
 
-// Handle clear button (reset calculator)
+// Handle clear button
 clearButton.addEventListener("click", () => {
     display.textContent = "0";
     firstNumber = "";
@@ -72,30 +71,7 @@ clearButton.addEventListener("click", () => {
     shouldResetDisplay = false;
 });
 
-// Prevent multiple decimals in one number
-document.addEventListener("keydown", (e) => {
-    if (e.key === "." && display.textContent.includes(".")) {
-        e.preventDefault();
-    }
-});
-
-// Math functions
-function add(a, b) { return a + b; }
-function subtract(a, b) { return a - b; }
-function multiply(a, b) { return a * b; }
-function divide(a, b) { return b === 0 ? "Error: Division by zero!" : a / b; }
-
-// Operate function to handle calculations
-function operate(operator, num1, num2) {
-    switch (operator) {
-        case '+': return add(num1, num2);
-        case '-': return subtract(num1, num2);
-        case '*': return multiply(num1, num2);
-        case '/': return divide(num1, num2);
-        default: return "Error: Invalid operator!";
-    }
-}
-
+// Handle backspace button
 backspaceButton.addEventListener("click", () => {
     if (display.textContent.length > 1) {
         display.textContent = display.textContent.slice(0, -1);
@@ -104,14 +80,27 @@ backspaceButton.addEventListener("click", () => {
     }
 });
 
+// Prevent multiple decimals and ensure correct decimal entry
+document.addEventListener("keydown", (e) => {
+    if (e.key === ".") {
+        if (shouldResetDisplay || display.textContent === "0") {
+            updateDisplay("0.");
+        } else if (!display.textContent.includes(".")) {
+            updateDisplay(".");
+        }
+        e.preventDefault();
+    }
+});
+
+// Handle keyboard input
 document.addEventListener("keydown", (event) => {
     if (event.key >= "0" && event.key <= "9") {
         updateDisplay(event.key);
     } else if (["+", "-", "*", "/"].includes(event.key)) {
         if (currentOperator !== null && !shouldResetDisplay) {
             secondNumber = display.textContent;
-            display.textContent = operate(currentOperator, parseFloat(firstNumber), parseFloat(secondNumber));
-            firstNumber = display.textContent;
+            firstNumber = operate(currentOperator, parseFloat(firstNumber), parseFloat(secondNumber));
+            display.textContent = firstNumber;
         } else {
             firstNumber = display.textContent;
         }
@@ -123,9 +112,22 @@ document.addEventListener("keydown", (event) => {
         backspaceButton.click();
     } else if (event.key === "Escape") {
         clearButton.click();
-    } else if (event.key === ".") {
-        if (!display.textContent.includes(".")) {
-            updateDisplay(".");
-        }
     }
 });
+
+// Math functions
+function add(a, b) { return a + b; }
+function subtract(a, b) { return a - b; }
+function multiply(a, b) { return a * b; }
+function divide(a, b) { return b === 0 ? "Error: Division by zero!" : a / b; }
+
+// Operate function
+function operate(operator, num1, num2) {
+    switch (operator) {
+        case '+': return add(num1, num2);
+        case '-': return subtract(num1, num2);
+        case '*': return multiply(num1, num2);
+        case '/': return divide(num1, num2);
+        default: return "Error: Invalid operator!";
+    }
+}
