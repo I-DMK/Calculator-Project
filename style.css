@@ -87,3 +87,12 @@ button:disabled {
     grid-column: span 2;
     width: 125px;
 }
+
+.backspace {
+    background: #555;
+    color: white;
+}
+
+.backspace:hover {
+    background: #333;
+}

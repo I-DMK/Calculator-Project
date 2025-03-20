@@ -4,6 +4,7 @@ const numberButtons = document.querySelectorAll(".number");
 const operatorButtons = document.querySelectorAll(".operator");
 const clearButton = document.querySelector(".clear");
 const equalsButton = document.querySelector(".equals");
+const backspaceButton = document.querySelector(".backspace");
 
 // Variables to store user input
 let firstNumber = "";
@@ -94,3 +95,37 @@ function operate(operator, num1, num2) {
         default: return "Error: Invalid operator!";
     }
 }
+
+backspaceButton.addEventListener("click", () => {
+    if (display.textContent.length > 1) {
+        display.textContent = display.textContent.slice(0, -1);
+    } else {
+        display.textContent = "0";
+    }
+});
+
+document.addEventListener("keydown", (event) => {
+    if (event.key >= "0" && event.key <= "9") {
+        updateDisplay(event.key);
+    } else if (["+", "-", "*", "/"].includes(event.key)) {
+        if (currentOperator !== null && !shouldResetDisplay) {
+            secondNumber = display.textContent;
+            display.textContent = operate(currentOperator, parseFloat(firstNumber), parseFloat(secondNumber));
+            firstNumber = display.textContent;
+        } else {
+            firstNumber = display.textContent;
+        }
+        currentOperator = event.key;
+        shouldResetDisplay = true;
+    } else if (event.key === "=" || event.key === "Enter") {
+        equalsButton.click();
+    } else if (event.key === "Backspace") {
+        backspaceButton.click();
+    } else if (event.key === "Escape") {
+        clearButton.click();
+    } else if (event.key === ".") {
+        if (!display.textContent.includes(".")) {
+            updateDisplay(".");
+        }
+    }
+});
