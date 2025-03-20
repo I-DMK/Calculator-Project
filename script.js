@@ -17,9 +17,25 @@ function divide(a, b) {
     return a / b;
 }
 
-// Testing in the console
-console.log(add(3, 5));        // Expected output: 8
-console.log(subtract(10, 4));  // Expected output: 6
-console.log(multiply(6, 7));   // Expected output: 42
-console.log(divide(20, 4));    // Expected output: 5
-console.log(divide(5, 0));     // Expected output: "Error: Division by zero!"
+function operate(operator, num1, num2) {
+    switch (operator) {
+        case '+':
+            return add(num1, num2);
+        case '-':
+            return subtract(num1, num2);
+        case '*':
+            return multiply(num1, num2);
+        case '/':
+            return divide(num1, num2);
+        default:
+            return "Error: Invalid operator!";
+    }
+}
+
+// Testing the operate function in the console
+console.log(operate('+', 4, 6));  // Expected output: 10
+console.log(operate('-', 10, 3)); // Expected output: 7
+console.log(operate('*', 7, 2));  // Expected output: 14
+console.log(operate('/', 9, 3));  // Expected output: 3
+console.log(operate('/', 5, 0));  // Expected output: "Error: Division by zero!"
+console.log(operate('%', 10, 2)); // Expected output: "Error: Invalid operator!"
